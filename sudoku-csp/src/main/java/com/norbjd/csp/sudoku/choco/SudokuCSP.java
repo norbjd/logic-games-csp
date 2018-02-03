@@ -29,13 +29,7 @@ public class SudokuCSP {
 	private IntVar[] cells;
 
 	private boolean debug;
-
-	public SudokuCSP(Sudoku sudoku) {
-		setSudoku(sudoku);
-		debug = false;
-		initModel();
-	}
-
+	
 	public SudokuCSP(Sudoku sudoku, boolean debug) {
 		setSudoku(sudoku);
 		this.debug = debug;
