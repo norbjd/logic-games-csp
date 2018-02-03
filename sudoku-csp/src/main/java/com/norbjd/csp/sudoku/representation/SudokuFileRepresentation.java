@@ -30,7 +30,7 @@ public class SudokuFileRepresentation implements SudokuRepresentation {
         try {
             SudokuStringRepresentation sudokuStringRepresentation = new SudokuStringRepresentation(getFileContent());
             return sudokuStringRepresentation.get();
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new InvalidSudokuRepresentationException(ioe.getMessage());
         }
     }

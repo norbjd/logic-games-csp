@@ -5,7 +5,8 @@ import com.norbjd.csp.fubuki.representation.InvalidFubukiRepresentationException
 
 public class FubukiReader {
 
-    public static Fubuki readFromRepresentation(FubukiRepresentation fubukiRepresentation) throws InvalidFubukiRepresentationException {
+    public static Fubuki readFromRepresentation(FubukiRepresentation fubukiRepresentation)
+            throws InvalidFubukiRepresentationException {
         return fubukiRepresentation.get();
     }
 

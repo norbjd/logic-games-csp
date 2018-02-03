@@ -5,7 +5,8 @@ import com.norbjd.csp.sudoku.representation.SudokuRepresentation;
 
 public class SudokuReader {
 
-    public static Sudoku readFromRepresentation(SudokuRepresentation SudokuRepresentation) throws InvalidSudokuRepresentationException {
+    public static Sudoku readFromRepresentation(SudokuRepresentation SudokuRepresentation)
+            throws InvalidSudokuRepresentationException {
         return SudokuRepresentation.get();
     }
 

@@ -24,8 +24,8 @@ public class Sudoku {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for(int i = 0; i < 9; i++) {
-            for(int j = 0; j < 9; j++) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
                 sb.append(cellsValues[i * 9 + j]);
                 sb.append(" ");
             }

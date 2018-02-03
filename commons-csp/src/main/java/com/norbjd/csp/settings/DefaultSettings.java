@@ -1,4 +1,4 @@
-package com.norbjd.csp;
+package com.norbjd.csp.settings;
 
 import org.chocosolver.solver.Settings;
 

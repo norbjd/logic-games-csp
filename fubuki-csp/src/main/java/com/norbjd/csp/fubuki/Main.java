@@ -18,7 +18,7 @@ public class Main {
             fubuki = FubukiReader.readFromRepresentation(fubukiRepresentation);
             System.out.println("-- Initial fubuki --");
             System.out.println(fubuki);
-        } catch(InvalidFubukiRepresentationException ifre) {
+        } catch (InvalidFubukiRepresentationException ifre) {
             ifre.printStackTrace();
             System.exit(1);
         }

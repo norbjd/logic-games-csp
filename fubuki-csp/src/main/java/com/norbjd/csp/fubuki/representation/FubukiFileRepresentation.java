@@ -30,7 +30,7 @@ public class FubukiFileRepresentation implements FubukiRepresentation {
         try {
             FubukiStringRepresentation fubukiStringRepresentation = new FubukiStringRepresentation(getFileContent());
             return fubukiStringRepresentation.get();
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new InvalidFubukiRepresentationException(ioe.getMessage());
         }
     }

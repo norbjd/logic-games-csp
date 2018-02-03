@@ -18,7 +18,7 @@ public class Main {
             Garam = GaramReader.readFromRepresentation(GaramRepresentation);
             System.out.println("-- Initial Garam --");
             System.out.println(Garam);
-        } catch(InvalidGaramRepresentationException ifre) {
+        } catch (InvalidGaramRepresentationException ifre) {
             ifre.printStackTrace();
             System.exit(1);
         }

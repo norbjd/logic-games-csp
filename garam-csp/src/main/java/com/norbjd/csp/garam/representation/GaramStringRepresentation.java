@@ -28,12 +28,14 @@ public class GaramStringRepresentation implements GaramRepresentation {
 
             String[] valuesLine = lines[1].split(",");
             int[] cellsValues = Arrays.stream(valuesLine).mapToInt(i -> {
-                if(i.equals("X")) return -1;
-                else return Integer.parseInt(i);
+                if (i.equals("X"))
+                    return -1;
+                else
+                    return Integer.parseInt(i);
             }).toArray();
 
             return new Garam(operands, cellsValues);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new InvalidGaramRepresentationException(e.getMessage());
         }
     }

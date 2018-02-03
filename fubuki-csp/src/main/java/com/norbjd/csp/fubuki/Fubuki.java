@@ -8,11 +8,7 @@ public class Fubuki {
     private int[] colSums;
     private int[] cellsValues;
 
-    public Fubuki(int height,
-                  int width,
-                  int[] rowSums,
-                  int[] colSums,
-                  int[] cellsValues) {
+    public Fubuki(int height, int width, int[] rowSums, int[] colSums, int[] cellsValues) {
         setHeight(height);
         setWidth(width);
         setRowSums(rowSums);
@@ -75,8 +71,8 @@ public class Fubuki {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(int row = 0; row < height; row++) {
-            for(int col = 0; col < width; col++) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
                 sb.append(cellsValues[row * width + col]);
                 sb.append("\t");
             }
@@ -84,7 +80,7 @@ public class Fubuki {
             sb.append("\n");
         }
 
-        for(int col = 0; col < width; col++) {
+        for (int col = 0; col < width; col++) {
             sb.append(colSums[col]);
             sb.append("\t");
         }

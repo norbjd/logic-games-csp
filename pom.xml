@@ -16,16 +16,27 @@
         <module>sudoku-csp</module>
     </modules>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+
+        <choco-solver.version>4.0.6</choco-solver.version>
+        <commons-lang.version>3.7</commons-lang.version>
+
+        <plugin.maven-compiler-plugin.version>3.7.0</plugin.maven-compiler-plugin.version>
+        <plugin.formatter-maven-plugin.version>2.7.1</plugin.formatter-maven-plugin.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.choco-solver</groupId>
             <artifactId>choco-solver</artifactId>
-            <version>4.0.6</version>
+            <version>${choco-solver.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
+            <version>${commons-lang.version}</version>
         </dependency>
         <dependency>
             <groupId>org.choco-solver</groupId>
@@ -39,11 +50,28 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>${plugin.maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>${plugin.formatter-maven-plugin.version}</version>
+                <configuration>
+                    <configFile>${project.basedir}/eclipse-java-google-style.xml</configFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,7 +1,7 @@
 package com.norbjd.csp.sudoku;
 
-import com.norbjd.csp.DebugSettings;
-import com.norbjd.csp.DefaultSettings;
+import com.norbjd.csp.settings.DebugSettings;
+import com.norbjd.csp.settings.DefaultSettings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.chocosolver.memory.trailing.EnvironmentTrailing;
@@ -42,12 +42,8 @@ public class SudokuCSP {
     }
 
     private IntVar[] extractSudokuColumn(int columnIndex) {
-        return IntStream.range(0, 81)
-                .mapToObj(i -> new ImmutablePair<>(i, cells[i]))
-                .filter(
-                        (Pair<Integer, IntVar> pair) -> pair.getLeft() % 9 == columnIndex
-                )
-                .map(Pair::getRight)
+        return IntStream.range(0, 81).mapToObj(i -> new ImmutablePair<>(i, cells[i]))
+                .filter((Pair<Integer, IntVar> pair) -> pair.getLeft() % 9 == columnIndex).map(Pair::getRight)
                 .toArray(IntVar[]::new);
     }
 
@@ -57,8 +53,8 @@ public class SudokuCSP {
 
         List<IntVar> blockCells = new ArrayList<>(9);
 
-        for(int i = blockLine * 3; i < (blockLine + 1) * 3; i++) {
-            for(int j = blockColumn * 3; j < (blockColumn + 1) * 3; j++) {
+        for (int i = blockLine * 3; i < (blockLine + 1) * 3; i++) {
+            for (int j = blockColumn * 3; j < (blockColumn + 1) * 3; j++) {
                 blockCells.add(cells[i * 9 + j]);
             }
         }
@@ -70,37 +66,33 @@ public class SudokuCSP {
         Stream<Pair<IntVar, Integer>> zippedCellsWithValues = IntStream.range(0, 9 * 9)
                 .mapToObj(i -> new ImmutablePair<>(cells[i], sudoku.getCellsValues()[i]));
 
-        Stream<Pair<IntVar, Integer>> zippedCellsWithPresetValues = zippedCellsWithValues.filter(
-                (Pair<IntVar, Integer> pair) -> pair.getRight() != 0
-        );
+        Stream<Pair<IntVar, Integer>> zippedCellsWithPresetValues = zippedCellsWithValues
+                .filter((Pair<IntVar, Integer> pair) -> pair.getRight() != 0);
 
-        return zippedCellsWithPresetValues.map(
-                (Pair<IntVar, Integer> pair) -> model.arithm(pair.getLeft(), "=", pair.getRight())
-        ).collect(Collectors.toList());
+        return zippedCellsWithPresetValues
+                .map((Pair<IntVar, Integer> pair) -> model.arithm(pair.getLeft(), "=", pair.getRight()))
+                .collect(Collectors.toList());
     }
 
     private List<Constraint> allDifferentsNumbersOnLinesConstraints() {
-        return IntStream.range(0, 9)
-                .mapToObj(line -> model.allDifferent(extractSudokuLine(line)))
+        return IntStream.range(0, 9).mapToObj(line -> model.allDifferent(extractSudokuLine(line)))
                 .collect(Collectors.toList());
     }
 
     private List<Constraint> allDifferentsNumbersOnColumnsConstraints() {
-        return IntStream.range(0, 9)
-                .mapToObj(column -> model.allDifferent(extractSudokuColumn(column)))
+        return IntStream.range(0, 9).mapToObj(column -> model.allDifferent(extractSudokuColumn(column)))
                 .collect(Collectors.toList());
     }
 
     private List<Constraint> allDifferentsNumbersOnBlocksConstraints() {
-        return IntStream.range(0, 9)
-                .mapToObj(block -> model.allDifferent(extractSudokuBlock(block)))
+        return IntStream.range(0, 9).mapToObj(block -> model.allDifferent(extractSudokuBlock(block)))
                 .collect(Collectors.toList());
     }
 
     private Model initModel() {
         Settings settings;
 
-        if(debug) {
+        if (debug) {
             settings = new DebugSettings();
         } else {
             settings = new DefaultSettings();
@@ -121,7 +113,7 @@ public class SudokuCSP {
     public Sudoku solve() {
         Solver solver = model.getSolver();
 
-        if(debug) {
+        if (debug) {
             solver.showDecisions();
             solver.showSolutions();
             solver.showContradiction();
@@ -143,7 +135,7 @@ public class SudokuCSP {
     public void solveAllAndPrintEachSolution() {
         Solver solver = model.getSolver();
 
-        if(debug) {
+        if (debug) {
             solver.showDecisions();
             solver.showSolutions();
             solver.showContradiction();
@@ -154,7 +146,7 @@ public class SudokuCSP {
 
         int nbSolutions = 0;
 
-        while(solver.solve()) {
+        while (solver.solve()) {
             int[] cellsValues = Stream.of(cells).mapToInt(IntVar::getValue).toArray();
 
             Sudoku sudokuCopy = new Sudoku(sudoku);
@@ -164,7 +156,7 @@ public class SudokuCSP {
             System.out.println(sudokuCopy);
         }
 
-        System.out.println("Number of solutions : "+nbSolutions);
+        System.out.println("Number of solutions : " + nbSolutions);
     }
 
 }

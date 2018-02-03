@@ -38,7 +38,7 @@ public class FubukiStringRepresentation implements FubukiRepresentation {
             int[] values = Arrays.stream(valuesLine).mapToInt(Integer::parseInt).toArray();
 
             return new Fubuki(height, width, rowSums, colSums, values);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new InvalidFubukiRepresentationException(e.getMessage());
         }
     }

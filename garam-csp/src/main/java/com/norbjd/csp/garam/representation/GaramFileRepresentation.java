@@ -30,7 +30,7 @@ public class GaramFileRepresentation implements GaramRepresentation {
         try {
             GaramStringRepresentation GaramStringRepresentation = new GaramStringRepresentation(getFileContent());
             return GaramStringRepresentation.get();
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             throw new InvalidGaramRepresentationException(ioe.getMessage());
         }
     }

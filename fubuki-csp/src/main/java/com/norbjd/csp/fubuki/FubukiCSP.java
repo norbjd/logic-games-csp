@@ -18,111 +18,104 @@ import java.util.stream.Stream;
 
 public class FubukiCSP {
 
-    private Fubuki fubuki;
-    private Model model;
-    private IntVar[] cells;
+	private Fubuki fubuki;
+	private Model model;
+	private IntVar[] cells;
 
-    public FubukiCSP(Fubuki fubuki) {
-        setFubuki(fubuki);
-        initModel();
-    }
+	public FubukiCSP(Fubuki fubuki) {
+		setFubuki(fubuki);
+		initModel();
+	}
 
-    private void setFubuki(Fubuki fubuki) {
-        this.fubuki = fubuki;
-    }
+	private void setFubuki(Fubuki fubuki) {
+		this.fubuki = fubuki;
+	}
 
-    private IntVar[] extractRowCells(IntVar[] cells, int rowIndex, int rowSize) {
-        int minIndex = rowIndex * rowSize;
-        int maxIndex = minIndex + rowSize;
+	private IntVar[] extractRowCells(IntVar[] cells, int rowIndex, int rowSize) {
+		int minIndex = rowIndex * rowSize;
+		int maxIndex = minIndex + rowSize;
 
-        return Arrays.asList(cells).subList(minIndex, maxIndex).toArray(new IntVar[rowSize]);
-    }
+		return Arrays.asList(cells).subList(minIndex, maxIndex).toArray(new IntVar[rowSize]);
+	}
 
-    private IntVar[] extractColCells(IntVar[] cells, int colIndex, int rowSize) {
-        return IntStream.range(0, fubuki.getNumberOfCells())
-                .mapToObj(i -> new ImmutablePair<>(i, cells[i]))
-                .filter(
-                        (Pair<Integer, IntVar> pair) -> pair.getLeft() % rowSize == colIndex
-                )
-                .map(Pair::getRight)
-                .toArray(IntVar[]::new);
-    }
+	private IntVar[] extractColCells(IntVar[] cells, int colIndex, int rowSize) {
+		return IntStream.range(0, fubuki.getNumberOfCells()).mapToObj(i -> new ImmutablePair<>(i, cells[i]))
+				.filter((Pair<Integer, IntVar> pair) -> pair.getLeft() % rowSize == colIndex).map(Pair::getRight)
+				.toArray(IntVar[]::new);
+	}
 
-    private Constraint allDifferentConstraint() {
-        return model.allDifferent(cells);
-    }
+	private Constraint allDifferentConstraint() {
+		return model.allDifferent(cells);
+	}
 
-    private List<Constraint> presetValuesConstraints() {
-        Stream<Pair<IntVar, Integer>> zippedCellsWithValues = IntStream.range(0, fubuki.getNumberOfCells())
-                .mapToObj(i -> new ImmutablePair<>(cells[i], fubuki.getCellsValues()[i]));
+	private List<Constraint> presetValuesConstraints() {
+		Stream<Pair<IntVar, Integer>> zippedCellsWithValues = IntStream.range(0, fubuki.getNumberOfCells())
+				.mapToObj(i -> new ImmutablePair<>(cells[i], fubuki.getCellsValues()[i]));
 
-        Stream<Pair<IntVar, Integer>> zippedCellsWithPresetValues = zippedCellsWithValues.filter(
-                (Pair<IntVar, Integer> pair) -> pair.getRight() != 0
-        );
+		Stream<Pair<IntVar, Integer>> zippedCellsWithPresetValues = zippedCellsWithValues
+				.filter((Pair<IntVar, Integer> pair) -> pair.getRight() != 0);
 
-        return zippedCellsWithPresetValues.map(
-                (Pair<IntVar, Integer> pair) -> model.arithm(pair.getLeft(), "=", pair.getRight())
-        ).collect(Collectors.toList());
-    }
+		return zippedCellsWithPresetValues
+				.map((Pair<IntVar, Integer> pair) -> model.arithm(pair.getLeft(), "=", pair.getRight()))
+				.collect(Collectors.toList());
+	}
 
-    private List<Constraint> rowSumsConstraints() {
-        return IntStream.range(0, fubuki.getWidth())
-                .mapToObj(rowIndex -> {
-                    IntVar[] rowCells = extractRowCells(cells, rowIndex, fubuki.getWidth());
-                    return model.sum(rowCells, "=", fubuki.getRowSums()[rowIndex]);
-                }).collect(Collectors.toList());
-    }
+	private List<Constraint> rowSumsConstraints() {
+		return IntStream.range(0, fubuki.getWidth()).mapToObj(rowIndex -> {
+			IntVar[] rowCells = extractRowCells(cells, rowIndex, fubuki.getWidth());
+			return model.sum(rowCells, "=", fubuki.getRowSums()[rowIndex]);
+		}).collect(Collectors.toList());
+	}
 
-    private List<Constraint> colSumsConstraints() {
-        return IntStream.range(0, fubuki.getHeight())
-                .mapToObj(colIndex -> {
-                    IntVar[] colCells = extractColCells(cells, colIndex, fubuki.getHeight());
-                    return model.sum(colCells, "=", fubuki.getColSums()[colIndex]);
-                }).collect(Collectors.toList());
-    }
+	private List<Constraint> colSumsConstraints() {
+		return IntStream.range(0, fubuki.getHeight()).mapToObj(colIndex -> {
+			IntVar[] colCells = extractColCells(cells, colIndex, fubuki.getHeight());
+			return model.sum(colCells, "=", fubuki.getColSums()[colIndex]);
+		}).collect(Collectors.toList());
+	}
 
-    private Model initModel() {
-        Settings settings = new Settings() {
-            @Override
-            public boolean debugPropagation() {
-                return true;
-            }
+	private Model initModel() {
+		Settings settings = new Settings() {
+			@Override
+			public boolean debugPropagation() {
+				return true;
+			}
 
-            @Override
-            public boolean warnUser() {
-                return true;
-            }
-        };
-        model = new Model(new EnvironmentTrailing(), "Fubuki", settings);
+			@Override
+			public boolean warnUser() {
+				return true;
+			}
+		};
+		model = new Model(new EnvironmentTrailing(), "Fubuki", settings);
 
-        cells = model.intVarArray("cell", fubuki.getNumberOfCells(), 1, fubuki.getNumberOfCells());
+		cells = model.intVarArray("cell", fubuki.getNumberOfCells(), 1, fubuki.getNumberOfCells());
 
-        allDifferentConstraint().post();
-        presetValuesConstraints().forEach(Constraint::post);
-        rowSumsConstraints().forEach(Constraint::post);
-        colSumsConstraints().forEach(Constraint::post);
+		allDifferentConstraint().post();
+		presetValuesConstraints().forEach(Constraint::post);
+		rowSumsConstraints().forEach(Constraint::post);
+		colSumsConstraints().forEach(Constraint::post);
 
-        return model;
-    }
+		return model;
+	}
 
-    public Fubuki solve() {
-        Solver solver = model.getSolver();
+	public Fubuki solve() {
+		Solver solver = model.getSolver();
 
-        solver.showDecisions();
-        solver.showSolutions();
-        solver.showContradiction();
+		solver.showDecisions();
+		solver.showSolutions();
+		solver.showContradiction();
 
-        solver.printStatistics();
-        solver.setExplainer(new ExplanationEngine(model, true, true));
+		solver.printStatistics();
+		solver.setExplainer(new ExplanationEngine(model, true, true));
 
-        solver.solve();
+		solver.solve();
 
-        int[] cellsValues = Stream.of(cells).mapToInt(IntVar::getValue).toArray();
+		int[] cellsValues = Stream.of(cells).mapToInt(IntVar::getValue).toArray();
 
-        Fubuki fubukiCopy = new Fubuki(fubuki);
-        fubukiCopy.setCellsValues(cellsValues);
+		Fubuki fubukiCopy = new Fubuki(fubuki);
+		fubukiCopy.setCellsValues(cellsValues);
 
-        return fubukiCopy;
-    }
+		return fubukiCopy;
+	}
 
 }

@@ -25,12 +25,12 @@ public class SudokuStringRepresentation implements SudokuRepresentation {
             int size = 9;
             int[] cellsValues = new int[size * size];
 
-            for(int line = 0; line < size; line++) {
+            for (int line = 0; line < size; line++) {
                 String[] cellsOnLine = lines[line].split(" ");
-                for(int col = 0; col < size; col++) {
+                for (int col = 0; col < size; col++) {
                     int cellIndex = line * size + col;
                     String cellValue = cellsOnLine[col];
-                    if(cellValue.equals("X")) {
+                    if (cellValue.equals("X")) {
                         cellsValues[cellIndex] = 0;
                     } else {
                         cellsValues[cellIndex] = Integer.parseInt(cellValue);
@@ -39,7 +39,7 @@ public class SudokuStringRepresentation implements SudokuRepresentation {
             }
 
             return new Sudoku(cellsValues);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new InvalidSudokuRepresentationException(e.getMessage());
         }
     }

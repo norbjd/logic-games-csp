@@ -1,8 +1,8 @@
 package com.norbjd.csp.sudoku;
 
+import com.norbjd.csp.sudoku.representation.InvalidSudokuRepresentationException;
 import com.norbjd.csp.sudoku.representation.SudokuFileRepresentation;
 import com.norbjd.csp.sudoku.representation.SudokuRepresentation;
-import com.norbjd.csp.sudoku.representation.InvalidSudokuRepresentationException;
 
 import java.io.File;
 
@@ -18,7 +18,7 @@ public class Main {
             sudoku = SudokuReader.readFromRepresentation(sudokuRepresentation);
             System.out.println("-- Initial sudoku --");
             System.out.println(sudoku);
-        } catch(InvalidSudokuRepresentationException ifre) {
+        } catch (InvalidSudokuRepresentationException ifre) {
             ifre.printStackTrace();
             System.exit(1);
         }
