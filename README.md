@@ -15,6 +15,9 @@ logic games solved are :
 Code duplication and architecture duplication between each module
 are deliberate, since the focus is done on CP, and over-designing by
 abstracting may have cluttered up reading. The main goal here by doing
-this is that each module can be read separately. Classes ending with `CSP`
-are the main classes to read for CP examples (variables initialization,
-constraints initialization, and model solving).
+this is that each module can be read separately.
+
+Classes ending with `CSP` are the main classes to read for CP examples.
+For the same readability reasons previously stated, each step of CP (variables
+initialization, constraints initialization, model solving) are defined
+in the same class.
