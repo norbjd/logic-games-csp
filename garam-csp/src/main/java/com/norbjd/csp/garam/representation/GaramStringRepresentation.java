@@ -1,6 +1,7 @@
 package com.norbjd.csp.garam.representation;
 
 import com.norbjd.csp.garam.Garam;
+import com.norbjd.csp.garam.representation.exception.GaramInvalidRepresentationException;
 
 import java.util.Arrays;
 
@@ -8,19 +9,15 @@ public class GaramStringRepresentation implements GaramRepresentation {
 
 	private String representation;
 
-	public GaramStringRepresentation(String representation) {
+	GaramStringRepresentation(String representation) {
 		setRepresentation(representation);
 	}
 
-	public String getRepresentation() {
-		return representation;
-	}
-
-	public void setRepresentation(String representation) {
+	private void setRepresentation(String representation) {
 		this.representation = representation;
 	}
 
-	public Garam get() throws InvalidGaramRepresentationException {
+	public Garam get() throws GaramInvalidRepresentationException {
 		try {
 			String[] lines = representation.split("\n");
 
@@ -28,7 +25,7 @@ public class GaramStringRepresentation implements GaramRepresentation {
 
 			String[] valuesLine = lines[1].split(",");
 			int[] cellsValues = Arrays.stream(valuesLine).mapToInt(i -> {
-				if (i.equals("X"))
+				if (i.equals("_"))
 					return -1;
 				else
 					return Integer.parseInt(i);
@@ -36,7 +33,7 @@ public class GaramStringRepresentation implements GaramRepresentation {
 
 			return new Garam(operands, cellsValues);
 		} catch (Exception e) {
-			throw new InvalidGaramRepresentationException(e.getMessage());
+			throw new GaramInvalidRepresentationException(e.getMessage());
 		}
 	}
 

@@ -4,10 +4,18 @@ import java.io.PrintStream;
 
 public class SudokuPrinter {
 
-	PrintStream out;
+	private PrintStream out;
 
 	SudokuPrinter(PrintStream out) {
 		this.out = out;
+	}
+
+	private String cellValueToString(int cellValue) {
+		if (cellValue == Sudoku.NO_VALUE) {
+			return "_";
+		} else {
+			return String.valueOf(cellValue);
+		}
 	}
 
 	private String toString(Sudoku sudoku) {
@@ -19,12 +27,7 @@ public class SudokuPrinter {
 			for (int j = 0; j < Sudoku.SUDOKU_SIDE_LENGTH; j++) {
 				int cellValue = cellsValues[i * Sudoku.SUDOKU_SIDE_LENGTH + j];
 
-				if (cellValue == Sudoku.NO_VALUE) {
-					sb.append("_");
-				} else {
-					sb.append(cellValue);
-				}
-
+				sb.append(cellValueToString(cellValue));
 				sb.append(" ");
 			}
 			sb.append("\n");

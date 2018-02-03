@@ -1,32 +1,38 @@
 package com.norbjd.csp.garam;
 
+import com.norbjd.csp.AbstractMain;
+import com.norbjd.csp.Arguments;
+import com.norbjd.csp.garam.choco.GaramCSP;
 import com.norbjd.csp.garam.representation.GaramFileRepresentation;
 import com.norbjd.csp.garam.representation.GaramRepresentation;
-import com.norbjd.csp.garam.representation.InvalidGaramRepresentationException;
+import com.norbjd.csp.garam.representation.exception.GaramInvalidRepresentationException;
 
 import java.io.File;
 
-public class Main {
+public class Main extends AbstractMain {
 
 	public static void main(String[] args) {
-		File GaramFile = new File(args[0]);
-		GaramRepresentation GaramRepresentation = new GaramFileRepresentation(GaramFile);
+		Arguments parsedArgs = parseArguments(args);
+		String fileName = parsedArgs.getFileName();
+		boolean debug = parsedArgs.getDebug();
 
-		Garam Garam = null;
+		File garamFile = new File(fileName);
+		GaramRepresentation garamRepresentation = new GaramFileRepresentation(garamFile);
+
+		Garam garam = null;
+		GaramPrinter printer = new GaramPrinter(System.out);
 
 		try {
-			Garam = GaramReader.readFromRepresentation(GaramRepresentation);
-			System.out.println("-- Initial Garam --");
-			System.out.println(Garam);
-		} catch (InvalidGaramRepresentationException ifre) {
+			garam = GaramReader.readFromRepresentation(garamRepresentation);
+			printer.printGaram(garam);
+		} catch (GaramInvalidRepresentationException ifre) {
 			ifre.printStackTrace();
 			System.exit(1);
 		}
 
-		GaramCSP GaramCSP = new GaramCSP(Garam);
-		System.out.println("-- Solution --");
-		// System.out.println(GaramCSP.solve());
-		GaramCSP.solveAllAndPrintEachSolution();
+		GaramCSP garamCSP = new GaramCSP(garam, debug);
+		Garam solution = garamCSP.solve();
+		printer.printGaram(solution);
 	}
 
 }

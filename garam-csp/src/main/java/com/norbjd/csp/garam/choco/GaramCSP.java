@@ -1,5 +1,6 @@
-package com.norbjd.csp.garam;
+package com.norbjd.csp.garam.choco;
 
+import com.norbjd.csp.garam.Garam;
 import com.norbjd.csp.settings.DebugSettings;
 import com.norbjd.csp.settings.DefaultSettings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -26,10 +27,11 @@ public class GaramCSP {
 	private IntVar[] cells;
 	private IntVar[] twoDigitsNumbers;
 
-	private boolean debug = true;
+	private boolean debug;
 
-	public GaramCSP(Garam garam) {
+	public GaramCSP(Garam garam, boolean debug) {
 		setGaram(garam);
+		this.debug = debug;
 		initModel();
 	}
 
@@ -48,10 +50,6 @@ public class GaramCSP {
 				model.arithm(twoDigitsNumbers[7], "=", cells[37].mul(10).add(cells[43]).intVar()));
 	}
 
-	/*
-	 * 0 A 1 = 2 3 B 4 = 5 7 G 8 = 9 15 H 16 = 17 18 I 19 = 20 23 L 24 = 25 26 M 27
-	 * = 28 30 R 31 = 32 38 S 39 = 40 41 T 42 = 43
-	 */
 	private List<Constraint> horizontalEquationsConstraints() {
 		return Arrays.asList(equation(cells[0], garam.getOperator(0), cells[1], cells[2]),
 				equation(cells[3], garam.getOperator(1), cells[4], cells[5]),
@@ -65,11 +63,6 @@ public class GaramCSP {
 				equation(cells[41], garam.getOperator(19), cells[42], cells[43]));
 	}
 
-	/*
-	 * 0 C 6 = 11 * [10] + 15 2 D 7 = 12 * [10] + 17 3 E 9 = 13 * [10] + 18 5 F 10 =
-	 * 14 * [10] + 20 16 J 21 = 24 19 K 22 = 27 23 N 29 = 34 * [10] + 38 25 O 30 =
-	 * 35 * [10] + 40 26 P 32 = 36 * [10] + 41 28 Q 33 = 37 * [10] + 43
-	 */
 	private List<Constraint> verticalEquationsConstraints() {
 		return Arrays.asList(equation(cells[0], garam.getOperator(2), cells[6], twoDigitsNumbers[0]),
 				equation(cells[2], garam.getOperator(3), cells[7], twoDigitsNumbers[1]),
@@ -124,9 +117,10 @@ public class GaramCSP {
 	public Garam solve() {
 		Solver solver = model.getSolver();
 
+		solver.showSolutions();
+
 		if (debug) {
 			solver.showDecisions();
-			solver.showSolutions();
 			solver.showContradiction();
 
 			solver.printStatistics();
@@ -141,33 +135,6 @@ public class GaramCSP {
 		garamCopy.setCellsValues(cellsValues);
 
 		return garamCopy;
-	}
-
-	public void solveAllAndPrintEachSolution() {
-		Solver solver = model.getSolver();
-
-		if (debug) {
-			solver.showDecisions();
-			solver.showSolutions();
-			solver.showContradiction();
-
-			solver.printStatistics();
-			solver.setExplainer(new ExplanationEngine(model, true, true));
-		}
-
-		int nbSolutions = 0;
-
-		while (solver.solve()) {
-			int[] cellsValues = Stream.of(cells).mapToInt(IntVar::getValue).toArray();
-
-			Garam garamCopy = new Garam(garam);
-			garamCopy.setCellsValues(cellsValues);
-
-			System.out.println("-- SOLUTION " + (++nbSolutions) + "--\n");
-			System.out.println(garamCopy);
-		}
-
-		System.out.println("Number of solutions : " + nbSolutions);
 	}
 
 }

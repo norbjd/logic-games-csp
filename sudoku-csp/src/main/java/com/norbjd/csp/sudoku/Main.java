@@ -1,37 +1,21 @@
 package com.norbjd.csp.sudoku;
 
+import com.norbjd.csp.AbstractMain;
+import com.norbjd.csp.Arguments;
 import com.norbjd.csp.sudoku.choco.SudokuCSP;
 import com.norbjd.csp.sudoku.exception.SudokuInitializationException;
-import com.norbjd.csp.sudoku.representation.exception.SudokuInvalidRepresentationException;
 import com.norbjd.csp.sudoku.representation.SudokuFileRepresentation;
 import com.norbjd.csp.sudoku.representation.SudokuRepresentation;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import com.norbjd.csp.sudoku.representation.exception.SudokuInvalidRepresentationException;
 
 import java.io.File;
 
-public class Main {
-
-	private static Pair<String, Boolean> parseArguments(String[] args) {
-		if(args.length == 0) {
-			System.err.println("Usage : Main <file> [<debug>]");
-			System.exit(0);
-		}
-
-		String fileName = args[0];
-		boolean debug = false;
-
-		if(args.length >= 2) {
-			debug = Boolean.parseBoolean(args[1]);
-		}
-
-		return new ImmutablePair<>(fileName, debug);
-	}
+public class Main extends AbstractMain {
 
 	public static void main(String[] args) throws SudokuInitializationException {
-		Pair<String, Boolean> parsedArgs = parseArguments(args);
-		String fileName = parsedArgs.getLeft();
-		boolean debug = parsedArgs.getRight();
+		Arguments parsedArgs = parseArguments(args);
+		String fileName = parsedArgs.getFileName();
+		boolean debug = parsedArgs.getDebug();
 
 		File sudokuFile = new File(fileName);
 		SudokuRepresentation sudokuRepresentation = new SudokuFileRepresentation(sudokuFile);

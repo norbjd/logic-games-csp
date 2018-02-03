@@ -1,6 +1,7 @@
 package com.norbjd.csp.garam.representation;
 
 import com.norbjd.csp.garam.Garam;
+import com.norbjd.csp.garam.representation.exception.GaramInvalidRepresentationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,24 +15,20 @@ public class GaramFileRepresentation implements GaramRepresentation {
 		setFile(file);
 	}
 
-	public File getFile() {
-		return file;
-	}
-
 	private String getFileContent() throws IOException {
 		return new String(Files.readAllBytes(file.toPath()));
 	}
 
-	public void setFile(File file) {
+	private void setFile(File file) {
 		this.file = file;
 	}
 
-	public Garam get() throws InvalidGaramRepresentationException {
+	public Garam get() throws GaramInvalidRepresentationException {
 		try {
 			GaramStringRepresentation GaramStringRepresentation = new GaramStringRepresentation(getFileContent());
 			return GaramStringRepresentation.get();
 		} catch (IOException ioe) {
-			throw new InvalidGaramRepresentationException(ioe.getMessage());
+			throw new GaramInvalidRepresentationException(ioe.getMessage());
 		}
 	}
 

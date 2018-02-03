@@ -1,12 +1,12 @@
 package com.norbjd.csp.sudoku;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.norbjd.csp.sudoku.exception.SudokuInitializationException;
 import com.norbjd.csp.sudoku.exception.SudokuInvalidCellValueException;
 import com.norbjd.csp.sudoku.exception.SudokuInvalidNumberOfCellsException;
 import com.norbjd.csp.sudoku.exception.SudokuUninitializedCellsValuesException;
 import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SudokuTest {
 
