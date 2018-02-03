@@ -8,25 +8,25 @@ import java.io.File;
 
 public class Main {
 
-    public static void main(String[] args) {
-        File GaramFile = new File(args[0]);
-        GaramRepresentation GaramRepresentation = new GaramFileRepresentation(GaramFile);
+	public static void main(String[] args) {
+		File GaramFile = new File(args[0]);
+		GaramRepresentation GaramRepresentation = new GaramFileRepresentation(GaramFile);
 
-        Garam Garam = null;
+		Garam Garam = null;
 
-        try {
-            Garam = GaramReader.readFromRepresentation(GaramRepresentation);
-            System.out.println("-- Initial Garam --");
-            System.out.println(Garam);
-        } catch (InvalidGaramRepresentationException ifre) {
-            ifre.printStackTrace();
-            System.exit(1);
-        }
+		try {
+			Garam = GaramReader.readFromRepresentation(GaramRepresentation);
+			System.out.println("-- Initial Garam --");
+			System.out.println(Garam);
+		} catch (InvalidGaramRepresentationException ifre) {
+			ifre.printStackTrace();
+			System.exit(1);
+		}
 
-        GaramCSP GaramCSP = new GaramCSP(Garam);
-        System.out.println("-- Solution --");
-        // System.out.println(GaramCSP.solve());
-        GaramCSP.solveAllAndPrintEachSolution();
-    }
+		GaramCSP GaramCSP = new GaramCSP(Garam);
+		System.out.println("-- Solution --");
+		// System.out.println(GaramCSP.solve());
+		GaramCSP.solveAllAndPrintEachSolution();
+	}
 
 }

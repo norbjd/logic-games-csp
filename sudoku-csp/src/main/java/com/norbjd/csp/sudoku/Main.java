@@ -8,24 +8,24 @@ import java.io.File;
 
 public class Main {
 
-    public static void main(String[] args) {
-        File sudokuFile = new File(args[0]);
-        SudokuRepresentation sudokuRepresentation = new SudokuFileRepresentation(sudokuFile);
+	public static void main(String[] args) {
+		File sudokuFile = new File(args[0]);
+		SudokuRepresentation sudokuRepresentation = new SudokuFileRepresentation(sudokuFile);
 
-        Sudoku sudoku = null;
+		Sudoku sudoku = null;
 
-        try {
-            sudoku = SudokuReader.readFromRepresentation(sudokuRepresentation);
-            System.out.println("-- Initial sudoku --");
-            System.out.println(sudoku);
-        } catch (InvalidSudokuRepresentationException ifre) {
-            ifre.printStackTrace();
-            System.exit(1);
-        }
+		try {
+			sudoku = SudokuReader.readFromRepresentation(sudokuRepresentation);
+			System.out.println("-- Initial sudoku --");
+			System.out.println(sudoku);
+		} catch (InvalidSudokuRepresentationException ifre) {
+			ifre.printStackTrace();
+			System.exit(1);
+		}
 
-        SudokuCSP sudokuCSP = new SudokuCSP(sudoku);
-        System.out.println("-- Solution --");
-        sudokuCSP.solve();
-    }
+		SudokuCSP sudokuCSP = new SudokuCSP(sudoku);
+		System.out.println("-- Solution --");
+		sudokuCSP.solve();
+	}
 
 }

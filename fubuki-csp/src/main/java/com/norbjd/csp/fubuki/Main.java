@@ -8,24 +8,24 @@ import java.io.File;
 
 public class Main {
 
-    public static void main(String[] args) {
-        File fubukiFile = new File(args[0]);
-        FubukiRepresentation fubukiRepresentation = new FubukiFileRepresentation(fubukiFile);
+	public static void main(String[] args) {
+		File fubukiFile = new File(args[0]);
+		FubukiRepresentation fubukiRepresentation = new FubukiFileRepresentation(fubukiFile);
 
-        Fubuki fubuki = null;
+		Fubuki fubuki = null;
 
-        try {
-            fubuki = FubukiReader.readFromRepresentation(fubukiRepresentation);
-            System.out.println("-- Initial fubuki --");
-            System.out.println(fubuki);
-        } catch (InvalidFubukiRepresentationException ifre) {
-            ifre.printStackTrace();
-            System.exit(1);
-        }
+		try {
+			fubuki = FubukiReader.readFromRepresentation(fubukiRepresentation);
+			System.out.println("-- Initial fubuki --");
+			System.out.println(fubuki);
+		} catch (InvalidFubukiRepresentationException ifre) {
+			ifre.printStackTrace();
+			System.exit(1);
+		}
 
-        FubukiCSP fubukiCSP = new FubukiCSP(fubuki);
-        System.out.println("-- Solution --");
-        System.out.println(fubukiCSP.solve());
-    }
+		FubukiCSP fubukiCSP = new FubukiCSP(fubuki);
+		System.out.println("-- Solution --");
+		System.out.println(fubukiCSP.solve());
+	}
 
 }
