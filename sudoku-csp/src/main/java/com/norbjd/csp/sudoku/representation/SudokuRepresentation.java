@@ -1,7 +1,8 @@
 package com.norbjd.csp.sudoku.representation;
 
 import com.norbjd.csp.sudoku.Sudoku;
+import com.norbjd.csp.sudoku.representation.exception.SudokuInvalidRepresentationException;
 
 public interface SudokuRepresentation {
-	public Sudoku get() throws InvalidSudokuRepresentationException;
+	Sudoku get() throws SudokuInvalidRepresentationException;
 }

@@ -1,12 +1,13 @@
 package com.norbjd.csp.sudoku.representation;
 
 import com.norbjd.csp.sudoku.Sudoku;
+import com.norbjd.csp.sudoku.representation.exception.SudokuInvalidRepresentationException;
 
 public class SudokuStringRepresentation implements SudokuRepresentation {
 
 	private String representation;
 
-	public SudokuStringRepresentation(String representation) {
+	SudokuStringRepresentation(String representation) {
 		setRepresentation(representation);
 	}
 
@@ -14,11 +15,11 @@ public class SudokuStringRepresentation implements SudokuRepresentation {
 		return representation;
 	}
 
-	public void setRepresentation(String representation) {
+	private void setRepresentation(String representation) {
 		this.representation = representation;
 	}
 
-	public Sudoku get() throws InvalidSudokuRepresentationException {
+	public Sudoku get() throws SudokuInvalidRepresentationException {
 		try {
 			String[] lines = representation.split("\n");
 
@@ -31,7 +32,7 @@ public class SudokuStringRepresentation implements SudokuRepresentation {
 					int cellIndex = line * size + col;
 					String cellValue = cellsOnLine[col];
 					if (cellValue.equals("X")) {
-						cellsValues[cellIndex] = 0;
+						cellsValues[cellIndex] = Sudoku.NO_VALUE;
 					} else {
 						cellsValues[cellIndex] = Integer.parseInt(cellValue);
 					}
@@ -40,7 +41,7 @@ public class SudokuStringRepresentation implements SudokuRepresentation {
 
 			return new Sudoku(cellsValues);
 		} catch (Exception e) {
-			throw new InvalidSudokuRepresentationException(e.getMessage());
+			throw new SudokuInvalidRepresentationException(e.getMessage());
 		}
 	}
 

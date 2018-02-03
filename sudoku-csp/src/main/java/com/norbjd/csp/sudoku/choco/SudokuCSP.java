@@ -1,7 +1,9 @@
-package com.norbjd.csp.sudoku;
+package com.norbjd.csp.sudoku.choco;
 
 import com.norbjd.csp.settings.DebugSettings;
 import com.norbjd.csp.settings.DefaultSettings;
+import com.norbjd.csp.sudoku.Sudoku;
+import com.norbjd.csp.sudoku.exception.SudokuInitializationException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.chocosolver.memory.trailing.EnvironmentTrailing;
@@ -38,36 +40,41 @@ public class SudokuCSP {
 	}
 
 	private IntVar[] extractSudokuLine(int lineIndex) {
-		return Arrays.asList(cells).subList(lineIndex * 9, (lineIndex + 1) * 9).toArray(new IntVar[9]);
+		return Arrays.asList(cells)
+				.subList(lineIndex * Sudoku.SUDOKU_SIDE_LENGTH, (lineIndex + 1) * Sudoku.SUDOKU_SIDE_LENGTH)
+				.toArray(new IntVar[Sudoku.SUDOKU_SIDE_LENGTH]);
 	}
 
 	private IntVar[] extractSudokuColumn(int columnIndex) {
-		return IntStream.range(0, 81).mapToObj(i -> new ImmutablePair<>(i, cells[i]))
-				.filter((Pair<Integer, IntVar> pair) -> pair.getLeft() % 9 == columnIndex).map(Pair::getRight)
-				.toArray(IntVar[]::new);
+		return IntStream.range(0, Sudoku.SUDOKU_NB_CELLS).mapToObj(i -> new ImmutablePair<>(i, cells[i]))
+				.filter((Pair<Integer, IntVar> pair) -> pair.getLeft() % Sudoku.SUDOKU_SIDE_LENGTH == columnIndex)
+				.map(Pair::getRight).toArray(IntVar[]::new);
 	}
 
 	private IntVar[] extractSudokuBlock(int blockIndex) {
-		int blockLine = blockIndex / 3;
-		int blockColumn = blockIndex % 3;
+		int blockLine = blockIndex / Sudoku.SUDOKU_BLOCK_SIDE_LENGTH;
+		int blockColumn = blockIndex % Sudoku.SUDOKU_BLOCK_SIDE_LENGTH;
 
-		List<IntVar> blockCells = new ArrayList<>(9);
+		List<IntVar> blockCells = new ArrayList<>(Sudoku.SUDOKU_SIDE_LENGTH);
 
-		for (int i = blockLine * 3; i < (blockLine + 1) * 3; i++) {
-			for (int j = blockColumn * 3; j < (blockColumn + 1) * 3; j++) {
-				blockCells.add(cells[i * 9 + j]);
+		for (int i = blockLine * Sudoku.SUDOKU_BLOCK_SIDE_LENGTH; i < (blockLine + 1)
+				* Sudoku.SUDOKU_BLOCK_SIDE_LENGTH; i++) {
+			for (int j = blockColumn * Sudoku.SUDOKU_BLOCK_SIDE_LENGTH; j < (blockColumn + 1)
+					* Sudoku.SUDOKU_BLOCK_SIDE_LENGTH; j++) {
+				blockCells.add(cells[i * Sudoku.SUDOKU_SIDE_LENGTH + j]);
 			}
 		}
 
-		return blockCells.toArray(new IntVar[9]);
+		return blockCells.toArray(new IntVar[Sudoku.SUDOKU_SIDE_LENGTH]);
 	}
 
 	private List<Constraint> presetValuesConstraints() {
-		Stream<Pair<IntVar, Integer>> zippedCellsWithValues = IntStream.range(0, 9 * 9)
+		Stream<Pair<IntVar, Integer>> zippedCellsWithValues = IntStream
+				.range(0, Sudoku.SUDOKU_SIDE_LENGTH * Sudoku.SUDOKU_SIDE_LENGTH)
 				.mapToObj(i -> new ImmutablePair<>(cells[i], sudoku.getCellsValues()[i]));
 
 		Stream<Pair<IntVar, Integer>> zippedCellsWithPresetValues = zippedCellsWithValues
-				.filter((Pair<IntVar, Integer> pair) -> pair.getRight() != 0);
+				.filter((Pair<IntVar, Integer> pair) -> pair.getRight() != Sudoku.NO_VALUE);
 
 		return zippedCellsWithPresetValues
 				.map((Pair<IntVar, Integer> pair) -> model.arithm(pair.getLeft(), "=", pair.getRight()))
@@ -75,18 +82,18 @@ public class SudokuCSP {
 	}
 
 	private List<Constraint> allDifferentsNumbersOnLinesConstraints() {
-		return IntStream.range(0, 9).mapToObj(line -> model.allDifferent(extractSudokuLine(line)))
-				.collect(Collectors.toList());
+		return IntStream.range(0, Sudoku.SUDOKU_SIDE_LENGTH)
+				.mapToObj(line -> model.allDifferent(extractSudokuLine(line))).collect(Collectors.toList());
 	}
 
 	private List<Constraint> allDifferentsNumbersOnColumnsConstraints() {
-		return IntStream.range(0, 9).mapToObj(column -> model.allDifferent(extractSudokuColumn(column)))
-				.collect(Collectors.toList());
+		return IntStream.range(0, Sudoku.SUDOKU_SIDE_LENGTH)
+				.mapToObj(column -> model.allDifferent(extractSudokuColumn(column))).collect(Collectors.toList());
 	}
 
 	private List<Constraint> allDifferentsNumbersOnBlocksConstraints() {
-		return IntStream.range(0, 9).mapToObj(block -> model.allDifferent(extractSudokuBlock(block)))
-				.collect(Collectors.toList());
+		return IntStream.range(0, Sudoku.SUDOKU_SIDE_LENGTH)
+				.mapToObj(block -> model.allDifferent(extractSudokuBlock(block))).collect(Collectors.toList());
 	}
 
 	private Model initModel() {
@@ -100,7 +107,7 @@ public class SudokuCSP {
 
 		model = new Model(new EnvironmentTrailing(), "Sudoku", settings);
 
-		cells = model.intVarArray(9 * 9, 1, 9);
+		cells = model.intVarArray(Sudoku.SUDOKU_SIDE_LENGTH * Sudoku.SUDOKU_SIDE_LENGTH, 1, Sudoku.SUDOKU_SIDE_LENGTH);
 
 		presetValuesConstraints().forEach(Constraint::post);
 		allDifferentsNumbersOnLinesConstraints().forEach(Constraint::post);
@@ -110,7 +117,7 @@ public class SudokuCSP {
 		return model;
 	}
 
-	public Sudoku solve() {
+	public Sudoku solve() throws SudokuInitializationException {
 		Solver solver = model.getSolver();
 
 		if (debug) {
@@ -126,37 +133,7 @@ public class SudokuCSP {
 
 		int[] cellsValues = Stream.of(cells).mapToInt(IntVar::getValue).toArray();
 
-		Sudoku sudokuCopy = new Sudoku(sudoku);
-		sudokuCopy.setCellsValues(cellsValues);
-
-		return sudokuCopy;
-	}
-
-	public void solveAllAndPrintEachSolution() {
-		Solver solver = model.getSolver();
-
-		if (debug) {
-			solver.showDecisions();
-			solver.showSolutions();
-			solver.showContradiction();
-
-			solver.printStatistics();
-			solver.setExplainer(new ExplanationEngine(model, true, true));
-		}
-
-		int nbSolutions = 0;
-
-		while (solver.solve()) {
-			int[] cellsValues = Stream.of(cells).mapToInt(IntVar::getValue).toArray();
-
-			Sudoku sudokuCopy = new Sudoku(sudoku);
-			sudokuCopy.setCellsValues(cellsValues);
-
-			System.out.println("-- SOLUTION " + (++nbSolutions) + "--\n");
-			System.out.println(sudokuCopy);
-		}
-
-		System.out.println("Number of solutions : " + nbSolutions);
+		return new Sudoku(cellsValues);
 	}
 
 }

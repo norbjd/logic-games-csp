@@ -1,6 +1,7 @@
 package com.norbjd.csp.sudoku.representation;
 
 import com.norbjd.csp.sudoku.Sudoku;
+import com.norbjd.csp.sudoku.representation.exception.SudokuInvalidRepresentationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,16 +23,16 @@ public class SudokuFileRepresentation implements SudokuRepresentation {
 		return new String(Files.readAllBytes(file.toPath()));
 	}
 
-	public void setFile(File file) {
+	private void setFile(File file) {
 		this.file = file;
 	}
 
-	public Sudoku get() throws InvalidSudokuRepresentationException {
+	public Sudoku get() throws SudokuInvalidRepresentationException {
 		try {
 			SudokuStringRepresentation sudokuStringRepresentation = new SudokuStringRepresentation(getFileContent());
 			return sudokuStringRepresentation.get();
 		} catch (IOException ioe) {
-			throw new InvalidSudokuRepresentationException(ioe.getMessage());
+			throw new SudokuInvalidRepresentationException(ioe.getMessage());
 		}
 	}
 
