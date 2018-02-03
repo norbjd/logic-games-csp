@@ -29,7 +29,7 @@ public class SudokuCSP {
 	private IntVar[] cells;
 
 	private boolean debug;
-	
+
 	public SudokuCSP(Sudoku sudoku, boolean debug) {
 		setSudoku(sudoku);
 		this.debug = debug;
@@ -71,7 +71,7 @@ public class SudokuCSP {
 
 	private List<Constraint> presetValuesConstraints() {
 		Stream<Pair<IntVar, Integer>> zippedCellsWithValues = IntStream
-				.range(0, Sudoku.SUDOKU_SIDE_LENGTH * Sudoku.SUDOKU_SIDE_LENGTH)
+				.range(0, Sudoku.SUDOKU_NB_CELLS)
 				.mapToObj(i -> new ImmutablePair<>(cells[i], sudoku.getCellsValues()[i]));
 
 		Stream<Pair<IntVar, Integer>> zippedCellsWithPresetValues = zippedCellsWithValues
@@ -83,18 +83,30 @@ public class SudokuCSP {
 	}
 
 	private List<Constraint> allDifferentsNumbersOnLinesConstraints() {
-		return IntStream.range(0, Sudoku.SUDOKU_SIDE_LENGTH)
-				.mapToObj(line -> model.allDifferent(extractSudokuLine(line))).collect(Collectors.toList());
+		List<Constraint> constraints = new ArrayList<>();
+		for(int line = 0; line < Sudoku.SUDOKU_SIDE_LENGTH; line++) {
+			Constraint rowConstraint = model.allDifferent(extractSudokuLine(line));
+			constraints.add(rowConstraint);
+		}
+		return constraints;
 	}
 
 	private List<Constraint> allDifferentsNumbersOnColumnsConstraints() {
-		return IntStream.range(0, Sudoku.SUDOKU_SIDE_LENGTH)
-				.mapToObj(column -> model.allDifferent(extractSudokuColumn(column))).collect(Collectors.toList());
+		List<Constraint> constraints = new ArrayList<>();
+		for(int column = 0; column < Sudoku.SUDOKU_SIDE_LENGTH; column++) {
+			Constraint columnConstraint = model.allDifferent(extractSudokuColumn(column));
+			constraints.add(columnConstraint);
+		}
+		return constraints;
 	}
 
 	private List<Constraint> allDifferentsNumbersOnBlocksConstraints() {
-		return IntStream.range(0, Sudoku.SUDOKU_SIDE_LENGTH)
-				.mapToObj(block -> model.allDifferent(extractSudokuBlock(block))).collect(Collectors.toList());
+		List<Constraint> constraints = new ArrayList<>();
+		for(int block = 0; block < Sudoku.SUDOKU_SIDE_LENGTH; block++) {
+			Constraint blockConstraint = model.allDifferent(extractSudokuBlock(block));
+			constraints.add(blockConstraint);
+		}
+		return constraints;
 	}
 
 	private Model initModel() {
@@ -121,9 +133,10 @@ public class SudokuCSP {
 	public Sudoku solve() throws SudokuInitializationException {
 		Solver solver = model.getSolver();
 
+		solver.showSolutions();
+
 		if (debug) {
 			solver.showDecisions();
-			solver.showSolutions();
 			solver.showContradiction();
 
 			solver.printStatistics();

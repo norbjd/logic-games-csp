@@ -31,7 +31,7 @@ public class SudokuStringRepresentation implements SudokuRepresentation {
 				for (int col = 0; col < size; col++) {
 					int cellIndex = line * size + col;
 					String cellValue = cellsOnLine[col];
-					if (cellValue.equals("X")) {
+					if (cellValue.equals("_")) {
 						cellsValues[cellIndex] = Sudoku.NO_VALUE;
 					} else {
 						cellsValues[cellIndex] = Integer.parseInt(cellValue);
