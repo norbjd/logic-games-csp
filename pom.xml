@@ -24,6 +24,7 @@
         <commons-lang.version>3.7</commons-lang.version>
 
         <plugin.maven-compiler-plugin.version>3.7.0</plugin.maven-compiler-plugin.version>
+        <plugin.maven-shade-plugin.version>3.1.0</plugin.maven-shade-plugin.version>
         <plugin.formatter-maven-plugin.version>2.7.1</plugin.formatter-maven-plugin.version>
 
         <junit.version>4.12</junit.version>
@@ -39,11 +40,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.choco-solver</groupId>
-            <artifactId>choco-cpviz</artifactId>
-            <version>3.3.0</version>
         </dependency>
 
         <dependency>
@@ -76,6 +72,20 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${plugin.maven-shade-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

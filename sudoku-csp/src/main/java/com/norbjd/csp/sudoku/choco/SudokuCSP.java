@@ -28,10 +28,17 @@ public class SudokuCSP {
 
 	private IntVar[] cells;
 
-	private boolean debug = true;
+	private boolean debug;
 
 	public SudokuCSP(Sudoku sudoku) {
 		setSudoku(sudoku);
+		debug = false;
+		initModel();
+	}
+
+	public SudokuCSP(Sudoku sudoku, boolean debug) {
+		setSudoku(sudoku);
+		this.debug = debug;
 		initModel();
 	}
 
@@ -107,7 +114,7 @@ public class SudokuCSP {
 
 		model = new Model(new EnvironmentTrailing(), "Sudoku", settings);
 
-		cells = model.intVarArray(Sudoku.SUDOKU_SIDE_LENGTH * Sudoku.SUDOKU_SIDE_LENGTH, 1, Sudoku.SUDOKU_SIDE_LENGTH);
+		cells = model.intVarArray(Sudoku.SUDOKU_NB_CELLS, 1, Sudoku.SUDOKU_SIDE_LENGTH);
 
 		presetValuesConstraints().forEach(Constraint::post);
 		allDifferentsNumbersOnLinesConstraints().forEach(Constraint::post);
