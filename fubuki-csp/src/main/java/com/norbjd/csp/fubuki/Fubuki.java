@@ -2,6 +2,8 @@ package com.norbjd.csp.fubuki;
 
 public class Fubuki {
 
+	public static final int NO_VALUE = -1;
+
 	private int height;
 	private int width;
 	private int[] rowSums;
@@ -66,26 +68,6 @@ public class Fubuki {
 
 	public int getNumberOfCells() {
 		return width * height;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int row = 0; row < height; row++) {
-			for (int col = 0; col < width; col++) {
-				sb.append(cellsValues[row * width + col]);
-				sb.append("\t");
-			}
-			sb.append(rowSums[row]);
-			sb.append("\n");
-		}
-
-		for (int col = 0; col < width; col++) {
-			sb.append(colSums[col]);
-			sb.append("\t");
-		}
-
-		return sb.toString();
 	}
 
 }

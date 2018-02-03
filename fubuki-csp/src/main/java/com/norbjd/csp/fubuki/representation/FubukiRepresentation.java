@@ -1,7 +1,8 @@
 package com.norbjd.csp.fubuki.representation;
 
 import com.norbjd.csp.fubuki.Fubuki;
+import com.norbjd.csp.fubuki.representation.exception.FubukiInvalidRepresentationException;
 
 public interface FubukiRepresentation {
-	public Fubuki get() throws InvalidFubukiRepresentationException;
+	Fubuki get() throws FubukiInvalidRepresentationException;
 }

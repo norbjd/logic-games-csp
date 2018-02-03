@@ -1,6 +1,7 @@
 package com.norbjd.csp.fubuki.representation;
 
 import com.norbjd.csp.fubuki.Fubuki;
+import com.norbjd.csp.fubuki.representation.exception.FubukiInvalidRepresentationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,24 +15,20 @@ public class FubukiFileRepresentation implements FubukiRepresentation {
 		setFile(file);
 	}
 
-	public File getFile() {
-		return file;
-	}
-
 	private String getFileContent() throws IOException {
 		return new String(Files.readAllBytes(file.toPath()));
 	}
 
-	public void setFile(File file) {
+	private void setFile(File file) {
 		this.file = file;
 	}
 
-	public Fubuki get() throws InvalidFubukiRepresentationException {
+	public Fubuki get() throws FubukiInvalidRepresentationException {
 		try {
 			FubukiStringRepresentation fubukiStringRepresentation = new FubukiStringRepresentation(getFileContent());
 			return fubukiStringRepresentation.get();
 		} catch (IOException ioe) {
-			throw new InvalidFubukiRepresentationException(ioe.getMessage());
+			throw new FubukiInvalidRepresentationException(ioe.getMessage());
 		}
 	}
 

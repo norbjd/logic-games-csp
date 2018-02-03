@@ -5,8 +5,8 @@ and solving small and easy logic games. This is used as an introduction to
 CP.
 
 Logic games, represented as CSP (Constraint Satisfaction Problem), are
-solved using [Choco Solver](http://www.choco-solver.org/). Currently, the
-logic games solved are :
+solved using [Choco Solver](http://www.choco-solver.org/), in Java.
+Currently, the logic games solved are :
 
 - [Sudoku](https://en.wikipedia.org/wiki/Sudoku)
 - [Garam](https://www.garam.fr)

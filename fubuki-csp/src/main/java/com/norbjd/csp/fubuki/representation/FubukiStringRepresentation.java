@@ -1,6 +1,7 @@
 package com.norbjd.csp.fubuki.representation;
 
 import com.norbjd.csp.fubuki.Fubuki;
+import com.norbjd.csp.fubuki.representation.exception.FubukiInvalidRepresentationException;
 
 import java.util.Arrays;
 
@@ -8,19 +9,15 @@ public class FubukiStringRepresentation implements FubukiRepresentation {
 
 	private String representation;
 
-	public FubukiStringRepresentation(String representation) {
+	FubukiStringRepresentation(String representation) {
 		setRepresentation(representation);
 	}
 
-	public String getRepresentation() {
-		return representation;
-	}
-
-	public void setRepresentation(String representation) {
+	private void setRepresentation(String representation) {
 		this.representation = representation;
 	}
 
-	public Fubuki get() throws InvalidFubukiRepresentationException {
+	public Fubuki get() throws FubukiInvalidRepresentationException {
 		try {
 			String[] lines = representation.split("\n");
 
@@ -39,7 +36,7 @@ public class FubukiStringRepresentation implements FubukiRepresentation {
 
 			return new Fubuki(height, width, rowSums, colSums, values);
 		} catch (Exception e) {
-			throw new InvalidFubukiRepresentationException(e.getMessage());
+			throw new FubukiInvalidRepresentationException(e.getMessage());
 		}
 	}
 

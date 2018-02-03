@@ -1,5 +1,6 @@
-package com.norbjd.csp.fubuki;
+package com.norbjd.csp.fubuki.choco;
 
+import com.norbjd.csp.fubuki.Fubuki;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.chocosolver.memory.trailing.EnvironmentTrailing;
@@ -22,8 +23,11 @@ public class FubukiCSP {
 	private Model model;
 	private IntVar[] cells;
 
-	public FubukiCSP(Fubuki fubuki) {
+	private boolean debug;
+
+	public FubukiCSP(Fubuki fubuki, boolean debug) {
 		setFubuki(fubuki);
+		this.debug = debug;
 		initModel();
 	}
 
