@@ -105,12 +105,15 @@ public class FubukiCSP {
 	public Fubuki solve() {
 		Solver solver = model.getSolver();
 
-		solver.showDecisions();
 		solver.showSolutions();
-		solver.showContradiction();
 
-		solver.printStatistics();
-		solver.setExplainer(new ExplanationEngine(model, true, true));
+		if (debug) {
+			solver.showDecisions();
+			solver.showContradiction();
+
+			solver.printStatistics();
+			solver.setExplainer(new ExplanationEngine(model, true, true));
+		}
 
 		solver.solve();
 

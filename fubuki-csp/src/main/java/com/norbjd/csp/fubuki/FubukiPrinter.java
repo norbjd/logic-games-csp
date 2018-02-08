@@ -22,12 +22,21 @@ public class FubukiPrinter {
 		StringBuilder sb = new StringBuilder();
 		for (int row = 0; row < fubuki.getHeight(); row++) {
 			for (int col = 0; col < fubuki.getWidth(); col++) {
-				sb.append(fubuki.getCellsValues()[row * fubuki.getWidth() + col]);
+				int cellValue = fubuki.getCellsValues()[row * fubuki.getWidth() + col];
+				sb.append(cellValueToString(cellValue));
 				sb.append("\t");
 			}
+			sb.append("=\t");
 			sb.append(fubuki.getRowSums()[row]);
 			sb.append("\n");
 		}
+
+		for (int col = 0; col < fubuki.getWidth(); col++) {
+			sb.append("=");
+			sb.append("\t");
+		}
+
+		sb.append("\n");
 
 		for (int col = 0; col < fubuki.getWidth(); col++) {
 			sb.append(fubuki.getColSums()[col]);

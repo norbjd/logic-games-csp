@@ -2,7 +2,7 @@ package com.norbjd.csp.fubuki;
 
 public class Fubuki {
 
-	public static final int NO_VALUE = -1;
+	public static final int NO_VALUE = 0;
 
 	private int height;
 	private int width;
