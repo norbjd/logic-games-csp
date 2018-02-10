@@ -109,7 +109,7 @@ public class SudokuCSP {
 		return constraints;
 	}
 
-	private Model initModel() {
+	private void initModel() {
 		Settings settings;
 
 		if (debug) {
@@ -122,12 +122,10 @@ public class SudokuCSP {
 
 		cells = model.intVarArray(Sudoku.SUDOKU_NB_CELLS, 1, Sudoku.SUDOKU_SIDE_LENGTH);
 
-		presetValuesConstraints().forEach(Constraint::post);
 		allDifferentsNumbersOnLinesConstraints().forEach(Constraint::post);
 		allDifferentsNumbersOnColumnsConstraints().forEach(Constraint::post);
 		allDifferentsNumbersOnBlocksConstraints().forEach(Constraint::post);
-
-		return model;
+		presetValuesConstraints().forEach(Constraint::post);
 	}
 
 	public Sudoku solve() throws SudokuInitializationException {
