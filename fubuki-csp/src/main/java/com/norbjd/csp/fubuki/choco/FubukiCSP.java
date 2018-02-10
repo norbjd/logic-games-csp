@@ -1,6 +1,8 @@
 package com.norbjd.csp.fubuki.choco;
 
 import com.norbjd.csp.fubuki.Fubuki;
+import com.norbjd.csp.settings.DebugSettings;
+import com.norbjd.csp.settings.DefaultSettings;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.chocosolver.memory.trailing.EnvironmentTrailing;
@@ -9,6 +11,12 @@ import org.chocosolver.solver.Settings;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.explanations.ExplanationEngine;
+import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.strategy.assignments.DecisionOperator;
+import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
+import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
+import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
 import org.chocosolver.solver.variables.IntVar;
 
 import java.util.Arrays;
@@ -79,17 +87,14 @@ public class FubukiCSP {
 	}
 
 	private Model initModel() {
-		Settings settings = new Settings() {
-			@Override
-			public boolean debugPropagation() {
-				return true;
-			}
+		Settings settings;
 
-			@Override
-			public boolean warnUser() {
-				return true;
-			}
-		};
+		if (debug) {
+			settings = new DebugSettings();
+		} else {
+			settings = new DefaultSettings();
+		}
+
 		model = new Model(new EnvironmentTrailing(), "Fubuki", settings);
 
 		cells = model.intVarArray("cell", fubuki.getNumberOfCells(), 1, fubuki.getNumberOfCells());
@@ -106,6 +111,27 @@ public class FubukiCSP {
 		Solver solver = model.getSolver();
 
 		solver.showSolutions();
+
+		/*
+		solver.setSearch(Search.intVarSearch(
+				new FirstFail(model),
+				new IntDomainMin(),
+				DecisionOperatorFactory.makeIntEq(),
+				cells
+		));
+		*/
+
+		/*
+		solver.setSearch(
+				org.chocosolver.solver.search.strategy.Search.minDomUBSearch(cells)
+		);
+		*/
+
+		/*
+		solver.setSearch(
+				org.chocosolver.solver.search.strategy.Search.domOverWDegSearch(cells)
+		);
+		*/
 
 		if (debug) {
 			solver.showDecisions();
